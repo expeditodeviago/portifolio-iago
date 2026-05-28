@@ -5,6 +5,7 @@ import nexusDashImg from '../assets/images/dashvizion-pro.png';
 import userPhoto1 from '../assets/images/1.jpg';
 import userPhoto2 from '../assets/images/2.jpeg';
 import userPhoto3 from '../assets/images/3.jpg';
+import userPhoto4 from '../assets/images/4.jpeg';
 
 export interface Project {
   id: string;
@@ -55,7 +56,7 @@ export const portfolioData: PortfolioData = {
   title: "Iago Expedito | Product Architect & Software Engineer",
   bio: "Estudante universitário na Unifan. Programador com foco na estruturação lógica de produtos, inteligência artificial (sistemas evolutivos) e celeridade operacional. Possui um perfil híbrido que une desenvolvimento de software com visão estratégica de processos.",
   
-  personalPhotos: [userPhoto1, userPhoto2, userPhoto3],
+  personalPhotos: [userPhoto1, userPhoto2, userPhoto3, userPhoto4],
 
   socialLinks: [
     { label: "Instagram", url: "https://www.instagram.com/iagoexpedito/" },
@@ -117,7 +118,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       category: "Operacional",
-      items: ["Celeridade Operacional", "Visão Estratégica", "Process Management"]
+      items: ["Celeridade Operacional", "Visão Estratégica", "Process Management", "DevOps & SRE"]
     }
   ]
 };
