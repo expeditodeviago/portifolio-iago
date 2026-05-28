@@ -1,0 +1,169 @@
+import { useEffect, useRef } from 'react';
+
+const CosmicBackground = () => {
+  const canvasRef = useRef<HTMLCanvasElement>(null);
+
+  useEffect(() => {
+    const canvas = canvasRef.current;
+    if (!canvas) return;
+    const ctx = canvas.getContext('2d');
+    if (!ctx) return;
+
+    let animationFrameId: number;
+    let particles: Star[] = [];
+    const mouse = { x: -100, y: -100, radius: 150 };
+
+    class Star {
+      x: number;
+      y: number;
+      size: number;
+      baseX: number;
+      baseY: number;
+      density: number;
+      blinkSpeed: number;
+      blinkOpacity: number;
+      increasing: boolean;
+
+      constructor(x: number, y: number) {
+        this.x = x;
+        this.y = y;
+        this.size = Math.random() * 1.5 + 0.5;
+        this.baseX = this.x;
+        this.baseY = this.y;
+        this.density = (Math.random() * 30) + 1;
+        this.blinkSpeed = Math.random() * 0.02 + 0.005;
+        this.blinkOpacity = Math.random();
+        this.increasing = Math.random() > 0.5;
+      }
+
+      draw() {
+        const glow = this.blinkOpacity * 8;
+        ctx!.fillStyle = `rgba(255, 255, 255, ${this.blinkOpacity * 0.9 + 0.1})`;
+        ctx!.shadowBlur = glow;
+        ctx!.shadowColor = '#00f0ff';
+        ctx!.beginPath();
+        ctx!.arc(this.x, this.y, this.size * (1 + this.blinkOpacity * 0.5), 0, Math.PI * 2);
+        ctx!.closePath();
+        ctx!.fill();
+        ctx!.shadowBlur = 0; 
+      }
+
+      update() {
+        // Twinkle logic
+        if (this.increasing) {
+          this.blinkOpacity += this.blinkSpeed;
+          if (this.blinkOpacity >= 1) this.increasing = false;
+        } else {
+          this.blinkOpacity -= this.blinkSpeed;
+          if (this.blinkOpacity <= 0.1) this.increasing = true;
+        }
+
+        // Mouse interaction
+        const dx = mouse.x - this.x;
+        const dy = mouse.y - this.y;
+        const distance = Math.sqrt(dx * dx + dy * dy);
+        if (distance < mouse.radius) {
+          const forceDirectionX = dx / distance;
+          const forceDirectionY = dy / distance;
+          const maxDistance = mouse.radius;
+          const force = (maxDistance - distance) / maxDistance;
+          const directionX = forceDirectionX * force * this.density;
+          const directionY = forceDirectionY * force * this.density;
+          this.x -= directionX;
+          this.y -= directionY;
+        } else {
+          if (this.x !== this.baseX) {
+            const dx = this.x - this.baseX;
+            this.x -= dx / 20;
+          }
+          if (this.y !== this.baseY) {
+            const dy = this.y - this.baseY;
+            this.y -= dy / 20;
+          }
+        }
+      }
+    }
+
+    const init = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      particles = [];
+      const numberOfParticles = (canvas.width * canvas.height) / 7000;
+      for (let i = 0; i < numberOfParticles; i++) {
+        const x = Math.random() * canvas.width;
+        const y = Math.random() * canvas.height;
+        particles.push(new Star(x, y));
+      }
+    };
+
+    const connect = () => {
+      const time = Date.now() * 0.001;
+      for (let a = 0; a < particles.length; a++) {
+        for (let b = a; b < particles.length; b++) {
+          const dx = particles[a].x - particles[b].x;
+          const dy = particles[a].y - particles[b].y;
+          const distance = Math.sqrt(dx * dx + dy * dy);
+
+          if (distance < 150) {
+            const pulse = (Math.sin(time + a) + 1) * 0.5;
+            const opacityValue = (1 - (distance / 150)) * 0.2 * pulse;
+            
+            if (opacityValue > 0.01) {
+              ctx!.strokeStyle = `rgba(0, 240, 255, ${opacityValue})`;
+              ctx!.lineWidth = 0.8;
+              ctx!.beginPath();
+              ctx!.moveTo(particles[a].x, particles[a].y);
+              ctx!.lineTo(particles[b].x, particles[b].y);
+              ctx!.stroke();
+            }
+          }
+        }
+      }
+    };
+
+    const animate = () => {
+      ctx.clearRect(0, 0, canvas.width, canvas.height);
+      for (let i = 0; i < particles.length; i++) {
+        particles[i].update();
+        particles[i].draw();
+      }
+      connect();
+      animationFrameId = requestAnimationFrame(animate);
+    };
+
+    const handleMouseMove = (e: MouseEvent) => {
+      mouse.x = e.clientX;
+      mouse.y = e.clientY;
+    };
+
+    const handleResize = () => {
+      canvas.width = window.innerWidth;
+      canvas.height = document.documentElement.scrollHeight;
+      init();
+    };
+
+    init();
+    animate();
+
+    window.addEventListener('mousemove', handleMouseMove);
+    window.addEventListener('resize', handleResize);
+    window.addEventListener('scroll', () => {
+      // Sync mouse context if needed or refresh
+    });
+
+    return () => {
+      cancelAnimationFrame(animationFrameId);
+      window.removeEventListener('mousemove', handleMouseMove);
+      window.removeEventListener('resize', handleResize);
+    };
+  }, []);
+
+  return (
+    <canvas 
+      ref={canvasRef} 
+      className="fixed inset-0 z-0 pointer-events-none"
+    />
+  );
+};
+
+export default CosmicBackground;

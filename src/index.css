@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+@theme {
+  --color-background: #0a0a0c;
+  --color-accent: #00f0ff;
+  --color-surface: #121214;
+  --font-sans: 'Inter', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', 'Fira Code', monospace;
+}
+
+@layer base {
+  body {
+    @apply bg-background text-slate-400 antialiased selection:bg-accent/30 selection:text-white overflow-x-hidden;
+  }
+
+  h1, h2, h3, h4, h5, h6 {
+    @apply text-white font-bold tracking-tight;
+  }
+}
+
+@layer components {
+  .blueprint-line {
+    @apply absolute bg-accent/20;
+  }
+}
+
+* {
+  scroll-behavior: smooth;
+}
+
+::-webkit-scrollbar {
+  width: 4px;
+}
+
+::-webkit-scrollbar-track {
+  @apply bg-background;
+}
+
+::-webkit-scrollbar-thumb {
+  @apply bg-white/5 rounded-full hover:bg-white/10 transition-colors;
+}
