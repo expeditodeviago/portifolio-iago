@@ -119,7 +119,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       category: "Operacional",
-      items: ["Celeridade Operacional", "Visão Estratégica", "Process Management", "DevOps & SRE"]
+      items: ["Celeridade Operacional", "Visão Estratégica", "Process Management", "DevOps"]
     }
   ]
 };
