@@ -37,7 +37,7 @@ const PhotoCarousel = () => {
   };
 
   return (
-    <div className="relative group">
+    <div className="relative group touch-pan-y">
       <div className="relative aspect-[4/5] md:aspect-square rounded-2xl overflow-hidden border border-white/10 bg-white/5">
         <AnimatePresence mode="wait">
           <motion.img
@@ -47,11 +47,18 @@ const PhotoCarousel = () => {
             animate={{ opacity: 1, scale: 1 }}
             exit={{ opacity: 0, scale: 0.9 }}
             transition={{ duration: 0.5 }}
-            className="w-full h-full object-cover"
+            drag="x"
+            dragConstraints={{ left: 0, right: 0 }}
+            dragElastic={0.2}
+            onDragEnd={(_, info) => {
+              if (info.offset.x > 50) prev();
+              else if (info.offset.x < -50) next();
+            }}
+            className="w-full h-full object-cover cursor-grab active:cursor-grabbing"
           />
         </AnimatePresence>
         
-        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 bg-gradient-to-t from-background/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
       </div>
 
       <div className="absolute inset-y-0 left-2 flex items-center">
