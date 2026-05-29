@@ -94,7 +94,7 @@ export const portfolioData: PortfolioData = {
         "Motor de Processamento (Pandas/NumPy): Limpeza e tratamento de dados em tempo real",
         "Dashboard Interativo (Recharts): Visualizações reativas com filtros globais",
         "NEXUS AI (Llama-3.1/Groq): Chatbot contextual com injeção de Markdown estatístico",
-        "DevSecOps: Isolamento de credenciais e processamento estritamente em RAM"
+        "Segurança & Infraestrutura: Isolamento de credenciais e processamento estritamente em RAM"
       ],
       challenges: "Garantir a precisão das respostas da IA mitigando alucinações através da alimentação de um contexto estatístico preciso extraído dos dados brutos.",
       securityMeasures: [
@@ -119,7 +119,7 @@ export const portfolioData: PortfolioData = {
     },
     {
       category: "Operacional",
-      items: ["Celeridade Operacional", "Visão Estratégica", "Process Management", "DevOps"]
+      items: ["Celeridade Operacional", "Visão Estratégica", "Process Management"]
     }
   ]
 };

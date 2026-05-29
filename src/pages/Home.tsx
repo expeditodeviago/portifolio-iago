@@ -161,7 +161,7 @@ const Home = () => {
                 </div>
                 <div>
                   <span className="text-3xl font-black text-white block">HYBRID</span>
-                  <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest">DevOps</span>
+                  <span className="text-[10px] font-mono text-white/30 uppercase tracking-widest"></span>
                 </div>
               </div>
             </motion.div>
