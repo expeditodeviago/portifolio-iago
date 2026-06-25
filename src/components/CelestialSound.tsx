@@ -14,30 +14,57 @@ const CelestialSound = () => {
     audioCtxRef.current = ctx;
 
     const masterGain = ctx.createGain();
-    // Reduced base volume for a much softer, ambient feel
-    masterGain.gain.setValueAtTime(0.08, ctx.currentTime);
+    // Reduced base volume for a much softer, deep space ambient feel
+    masterGain.gain.setValueAtTime(0.05, ctx.currentTime);
     masterGain.connect(ctx.destination);
     masterGainRef.current = masterGain;
 
-    // Pentatonic ambient scale for richer, harmonious variation (D2, E2, G2, A2, B2)
-    const baseFreqs = [73.42, 82.41, 98.00, 110.00, 123.47]; 
+    function createLayer(freq: number, type: OscillatorType, volume: number, panned: number, isTwinkle = false) {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      const pan = ctx.createPanner();
+
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq + (Math.random() * 0.4 - 0.2), ctx.currentTime);
+      pan.setPosition(Math.sin(panned), 0, Math.cos(panned));
+
+      gain.gain.setValueAtTime(0, ctx.currentTime);
+      gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 3);
+
+      const lfo = ctx.createOscillator();
+      const lfoGain = ctx.createGain();
+      // Very slow LFO for space-like evolving drone
+      lfo.frequency.setValueAtTime(isTwinkle ? 0.1 : 0.005 + Math.random() * 0.01, ctx.currentTime);
+      lfoGain.gain.setValueAtTime(volume * 0.8, ctx.currentTime);
+      lfo.connect(lfoGain);
+      lfoGain.connect(gain.gain);
+      lfo.start();
+
+      osc.connect(gain);
+      gain.connect(pan);
+      pan.connect(masterGain);
+      osc.start();
+    }
+
+    // Deep space open fifths (A1, E2, A2, E3, A3)
+    const baseFreqs = [55.00, 82.41, 110.00, 164.81, 220.00]; 
     
     baseFreqs.forEach((freq, index) => {
-      // Primary Pad (Sine)
-      createLayer(freq, 'sine', 0.03, index * 0.2);
-      // Overtone Layer (Triangle for warmth)
-      createLayer(freq * 1.5, 'triangle', 0.015, index * 0.3); // Fifth harmonic
-      // High Twinkle Layer (Sine with fast LFO)
-      if (index > 1) {
-        createLayer(freq * 4, 'sine', 0.008, index, true);
+      // Sub drone (Sine)
+      createLayer(freq, 'sine', 0.04, index * 0.2);
+      // Overtone warmth (Triangle)
+      createLayer(freq * 1.5, 'triangle', 0.01, index * 0.3);
+      // Distant eerie harmonic
+      if (index > 2) {
+        createLayer(freq * 2.5, 'sine', 0.005, index, true);
       }
     });
 
-    // Reverb simulation (Subtle delay network with more echo)
-    const delay = ctx.createDelay(2.0);
+    // Massive Space Reverb simulation
+    const delay = ctx.createDelay(3.0);
     const feedback = ctx.createGain();
-    delay.delayTime.value = 1.2;
-    feedback.gain.value = 0.5;
+    delay.delayTime.value = 2.4; // Long delay for vast space
+    feedback.gain.value = 0.75; // Heavy feedback
     
     masterGain.connect(delay);
     delay.connect(feedback);
@@ -45,36 +72,7 @@ const CelestialSound = () => {
     delay.connect(ctx.destination);
   }, []);
 
-  const createLayer = (freq: number, type: OscillatorType, volume: number, panned: number, isTwinkle = false) => {
-    const ctx = audioCtxRef.current!;
-    const osc = ctx.createOscillator();
-    const gain = ctx.createGain();
-    const pan = ctx.createPanner();
 
-    osc.type = type;
-    // Slight detune for a chorusing, drifting effect
-    osc.frequency.setValueAtTime(freq + (Math.random() * 0.4 - 0.2), ctx.currentTime);
-
-    // Stereo Panning
-    pan.setPosition(Math.sin(panned), 0, Math.cos(panned));
-
-    gain.gain.setValueAtTime(0, ctx.currentTime);
-    gain.gain.linearRampToValueAtTime(volume, ctx.currentTime + 3); // Slow fade in
-
-    // Subtle LFO for organic movement
-    const lfo = ctx.createOscillator();
-    const lfoGain = ctx.createGain();
-    lfo.frequency.setValueAtTime(isTwinkle ? Math.random() * 2 + 1 : 0.02 + Math.random() * 0.05, ctx.currentTime);
-    lfoGain.gain.setValueAtTime(volume * 0.6, ctx.currentTime);
-    lfo.connect(lfoGain);
-    lfoGain.connect(gain.gain);
-    lfo.start();
-
-    osc.connect(gain);
-    gain.connect(pan);
-    pan.connect(masterGainRef.current!);
-    osc.start();
-  };
 
   // Handle browser autoplay policies (Wait for first interaction)
   useEffect(() => {
@@ -100,7 +98,7 @@ const CelestialSound = () => {
       window.removeEventListener('keydown', unlockAudio);
       window.removeEventListener('touchstart', unlockAudio);
     };
-  }, [isMuted]);
+  }, [isMuted, initAudio]);
 
   const toggleMute = () => {
     if (!audioCtxRef.current) initAudio();

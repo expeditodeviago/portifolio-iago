@@ -2,6 +2,7 @@ import { Layout, Database, Zap, Cpu, Code2, Globe, Mail } from 'lucide-react';
 
 // Import local images
 import nexusDashImg from '../assets/images/dashvizion-pro.png';
+import livroDasPalavrasImg from '../assets/images/livro-das-palavras.jpg';
 import userPhoto1 from '../assets/images/1.jpg';
 import userPhoto2 from '../assets/images/2.jpeg';
 import userPhoto3 from '../assets/images/3.jpg';
@@ -105,6 +106,26 @@ export const portfolioData: PortfolioData = {
       techStack: ["React", "TypeScript", "FastAPI", "Pandas", "Python", "Llama-3.1", "Groq API"],
       imageUrl: nexusDashImg,
       liveUrl: "https://nexusdash-zeta.vercel.app"
+    },
+    {
+      id: "livro-das-palavras",
+      title: "LIVRO DAS PALAVRAS (Grimório)",
+      tagline: "O seu ritual diário de vocabulário",
+      shortDescription: "Uma aplicação interativa gamificada para o aprendizado de vocabulário em inglês, com um tema de fantasia/grimório mágico.",
+      fullDescription: "O Livro das Palavras é uma aplicação focada no aprendizado contínuo através de sessões diárias (20 novas palavras ou revisão). Conta com Sistema Leitner de Repetição Espaçada, minigames (múltipla escolha, anagramas, digitação com TTS, reconhecimento de voz), um sistema de níveis e o 'Oráculo' para feedback inteligente. Originalmente construído com SQLite local (better-sqlite3), foi planejado para migração de persistência para Turso (LibSQL), Vercel Postgres ou Supabase visando ambientes serverless/edge.",
+      technicalArchitecture: [
+        "Sistema Leitner (Repetição Espaçada): Algoritmo de memorização e frequência",
+        "Oráculo & Minigames: Lógica de feedback inteligente e exercícios de fixação com TTS/Voz",
+        "Banco de Dados: Integração com Prisma ORM e SQLite/Turso"
+      ],
+      challenges: "Garantir a persistência de dados em ambientes efêmeros na nuvem (Vercel), gerenciando a migração de um banco de dados SQLite local para soluções baseadas em Edge como Turso (LibSQL).",
+      securityMeasures: [
+        "Gestão segura de requisições TTS (Google Translate API via Backend)",
+        "Isolamento do ORM para transações seguras de banco de dados"
+      ],
+      techStack: ["Next.js 14+", "React 19", "Prisma ORM", "SQLite / Turso", "Framer Motion", "Lucide React", "Web Speech API"],
+      imageUrl: livroDasPalavrasImg,
+      liveUrl: "https://livro-das-palavras.vercel.app"
     }
   ],
 

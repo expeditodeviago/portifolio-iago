@@ -23,8 +23,9 @@ const NexusPreview = () => {
         setStep(prev => prev + 1);
       }, 1500);
       return () => clearTimeout(timer);
-    } else if (step === steps.length) {
-      setIsProcessing(false);
+    } else if (step === steps.length && isProcessing) {
+      const timer = setTimeout(() => setIsProcessing(false), 0);
+      return () => clearTimeout(timer);
     }
   }, [isProcessing, step, steps.length]);
 
